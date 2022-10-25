@@ -116,12 +116,15 @@ internal class EmojiCollectionView: UIView {
     }
     
     internal func scrollToCategory(_ category: Category) {
-        guard var section = emojis.firstIndex(where: { $0.category == category }) else {
+        guard let section = emojis.firstIndex(where: { $0.category == category }) else {
             return
         }
         
         if category == .recents && emojis[section].emojis.isEmpty {
-            section = emojis.firstIndex(where: { $0.category == Category.smileysAndPeople })!
+            guard emojis.firstIndex(where: { $0.category == Category.smileysAndPeople }) != nil else{//历史表情为空时，滚动
+                let indexPath = IndexPath(item: 0, section: 1)
+                collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+                return}
         }
         
         let indexPath = IndexPath(item: 0, section: section)
